@@ -1,13 +1,14 @@
 const express = require('express');
 const http = require('http');
 const socketIo = require('socket.io');
+const path = require('path'); // เพิ่มบรรทัดนี้
 
 const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
 
 app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/index.html');
+  res.sendFile(path.join(__dirname, 'index.html')); // ใช้ path.join() เพื่อสร้างเส้นทางไฟล์ index.html
 });
 
 io.on('connection', (socket) => {
