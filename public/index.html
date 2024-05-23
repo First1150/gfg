@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Socket.io Chat</title>
+  <style>
+    #chat-box {
+      width: 400px;
+      height: 300px;
+      background-color: #f0f0f0;
+      overflow-y: scroll;
+    }
+    #message-input {
+      width: 300px;
+    }
+  </style>
+</head>
+<body>
+  <div id="chat-box"></div>
+  <input type="text" id="message-input" placeholder="Type your message...">
+  <button id="send-button">Send</button>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+
+    const chatBox = document.getElementById('chat-box');
+    const messageInput = document.getElementById('message-input');
+    const sendButton = document.getElementById('send-button');
+
+    sendButton.addEventListener('click', () => {
+      const message = messageInput.value;
+      if (message.trim() !== '') {
+        appendMessage('You', message);
+        socket.emit('chat message', message);
+        messageInput.value = '';
+      }
+    });
+
+    socket.on('chat message', (data) => {
+      appendMessage(data.sender, data.message);
+    });
+
+    function appendMessage(sender, message) {
+      const messageElement = document.createElement('div');
+      messageElement.textContent = `${sender}: ${message}`;
+      chatBox.appendChild(messageElement);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+  </script>
+</body>
+</html>
